@@ -1,0 +1,18 @@
+version: "3.9"
+services:
+  backend:
+    build: ./backend
+    environment:
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY}
+      GEMINI_MODEL: gemini-1.5-flash
+      UVICORN_WORKERS: 2
+      CORS_ORIGINS: http://localhost:5173
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend

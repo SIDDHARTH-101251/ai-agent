@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-agent-backend
+  namespace: ai-agent
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ai-agent-backend
+  template:
+    metadata:
+      labels:
+        app: ai-agent-backend
+    spec:
+      containers:
+        - name: backend
+          image: siddharth101/ai-agent-backend:latest
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: ai-agent-config
+            - secretRef:
+                name: ai-agent-secrets
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 20
